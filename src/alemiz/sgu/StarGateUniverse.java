@@ -38,14 +38,6 @@ public class StarGateUniverse extends PluginBase {
         initPackets();
 
         getLogger().info("§aEnabling StarGate Universe: Client");
-
-        getServer().getScheduler().scheduleDelayedTask(new Task() {
-            @Override
-            public void onRun(int i) {
-                Player player = getServer().getPlayer("alemiz003");
-                StarGateUniverse.getInstance().transferPlayer(player, "lobby2");
-            }
-        }, 20*20);
     }
 
     public static StarGateUniverse getInstance() {
