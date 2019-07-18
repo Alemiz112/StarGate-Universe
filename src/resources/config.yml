@@ -1,0 +1,9 @@
+#StarGate Universe
+##Project by Alemiz
+#Website: https://github.com/Alemiz112
+
+#Name of client that will be shown to server
+Client: Lobby
+
+Address: 127.0.0.1
+Port: 47007

@@ -1,0 +1,7 @@
+name: StarGate-Universe
+version: "0.9"
+api: ["1.0.0"]
+author: Alemiz
+website: https://github.com/Alemiz112
+main: alemiz.sgu.StarGateUniverse
+load: POSTWORLD
