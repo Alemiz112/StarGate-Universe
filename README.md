@@ -10,7 +10,7 @@
 More features will be added very soon
 
 ## 🔧API
-You can access StarGate-Unuverse(SGU) by ``StarGateUniverse.getInstance()``
+You can access StarGate-Universe by ``StarGateUniverse.getInstance()``
 #### Avalibe Functions
 - ``transferPlayer(Player player, String server)`` This we use to transfer Player between servers
 - ``RegisterPacket(StarGatePacket packet)`` Really simple method for registring Packet
