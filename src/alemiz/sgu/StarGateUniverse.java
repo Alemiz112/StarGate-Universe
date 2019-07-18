@@ -73,11 +73,6 @@ public class StarGateUniverse extends PluginBase {
         int type = packet.getID();
 
         switch (type){
-            /*case Packets.WELCOME_PACKET:
-                WelcomePacket welcomePacket = (WelcomePacket) packet;
-                getLogger().info("§bReceiving first data from §e"+welcomePacket.server);
-                getLogger().info("§bUSAGE: §e"+welcomePacket.usage+"%§b TPS: §e"+welcomePacket.tps+" §bPLAYERS: §e"+welcomePacket.players);
-                break;*/
             default:
                 /** Here we call Event that will send packet to DEVs plugin*/
                 getServer().getPluginManager().
