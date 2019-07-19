@@ -15,6 +15,7 @@ You can access StarGate-Universe by ``StarGateUniverse.getInstance()``
 - ``transferPlayer(Player player, String server)`` This we use to transfer Player between servers
 - ``RegisterPacket(StarGatePacket packet)`` Really simple method for registring Packet
 - ``putPacket(StarGatePacket packet)`` This allows you to send packet. Packet must be registered first
+- ``kickPlayer(Player player, String reason)``  Kick player from any server connected to StarGate network
 ##### Example:
 ```java
 Player player = PLUGIN.getServer().getPlayer("alemiz003");
@@ -22,6 +23,7 @@ String server = "lobby2";
 
 StarGateUniverse.getInstance().transferPlayer(player, server);
 ```
+To more examples look [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests)!
 
 #### 📦Packet Handling
 Received Packets are handled by ``CustomPacketEvent``. Official Packets are handled (if needed) automaticly</br></br>

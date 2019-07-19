@@ -1,16 +1,14 @@
 package alemiz.sgu;
 
-import alemiz.sgu.packets.PingPacket;
-import alemiz.sgu.packets.PlayerTransferPacket;
-import alemiz.sgu.packets.WelcomePacket;
+import alemiz.sgu.packets.*;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
-import alemiz.sgu.packets.StarGatePacket;
 import alemiz.sgu.untils.Convertor;
+import tests.KickExample;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -20,6 +18,9 @@ public class StarGateUniverse extends PluginBase {
 
     public Config cfg;
     private Client client;
+
+    /* Only for Developers for testing*/
+    private boolean debug = false;
 
     private static StarGateUniverse instance;
 
@@ -38,6 +39,8 @@ public class StarGateUniverse extends PluginBase {
         initPackets();
 
         getLogger().info("§aEnabling StarGate Universe: Client");
+
+        debug();
     }
 
     public static StarGateUniverse getInstance() {
@@ -51,6 +54,7 @@ public class StarGateUniverse extends PluginBase {
         RegisterPacket(new WelcomePacket());
         RegisterPacket(new PingPacket());
         RegisterPacket(new PlayerTransferPacket());
+        RegisterPacket(new KickPacket());
     }
 
     /* Using these function we can process packet from string to data
@@ -95,6 +99,7 @@ public class StarGateUniverse extends PluginBase {
 
     /* Transfering player to other server*/
     public void transferPlayer(Player player, String server){
+        if (player == null) return;
         PlayerTransferPacket packet = new PlayerTransferPacket();
 
         packet.player = player;
@@ -102,5 +107,24 @@ public class StarGateUniverse extends PluginBase {
 
         packet.isEncoded = false;
         putPacket(packet);
+    }
+
+    /* Kick player from any server connected to StarGate network*/
+    public void kickPlayer(Player player, String reason){
+        if (player == null) return;
+        KickPacket packet = new KickPacket();
+
+        packet.player = player;
+        packet.reason = reason;
+
+        packet.isEncoded = false;
+        putPacket(packet);
+    }
+
+    /* This function is only for Developing this plugin*/
+    public void debug(){
+        if (!debug) return;
+
+        getServer().getCommandMap().register("ekick", new KickExample());
     }
 }
