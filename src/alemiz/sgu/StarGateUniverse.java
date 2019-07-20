@@ -3,14 +3,11 @@ package alemiz.sgu;
 import alemiz.sgu.packets.*;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
 import alemiz.sgu.untils.Convertor;
-import tests.KickExample;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,12 +16,11 @@ public class StarGateUniverse extends PluginBase {
     public Config cfg;
     private Client client;
 
-    /* Only for Developers for testing*/
-    private boolean debug = false;
-
     private static StarGateUniverse instance;
 
     protected static Map<Integer, StarGatePacket> packets = new HashMap<>();
+
+    public Map<String, String> responses = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -39,12 +35,14 @@ public class StarGateUniverse extends PluginBase {
         initPackets();
 
         getLogger().info("§aEnabling StarGate Universe: Client");
-
-        debug();
     }
 
     public static StarGateUniverse getInstance() {
         return instance;
+    }
+
+    public Map<String, String> getResponses() {
+        return responses;
     }
 
     /**
@@ -67,6 +65,11 @@ public class StarGateUniverse extends PluginBase {
 
         /* Here we decode Packet. Create from String Data*/
         StarGatePacket packet = packets.get(PacketId);
+        String uuid = data[data.length - 1];
+
+        packet.uuid = uuid;
+
+        packet.encoded = packetString;
         packet.decode();
 
         handlePacket(packet);
@@ -87,9 +90,10 @@ public class StarGateUniverse extends PluginBase {
 
     /* Beginning of API section*/
 
-    /* This allows you to send packet*/
-    public void putPacket(StarGatePacket packet){
-        client.gatePacket(packet);
+    /* This allows you to send packet
+    * Returns packets UUID*/
+    public String putPacket(StarGatePacket packet){
+        return client.gatePacket(packet);
     }
 
     /* Really simple method for registring Packet*/
@@ -121,10 +125,4 @@ public class StarGateUniverse extends PluginBase {
         putPacket(packet);
     }
 
-    /* This function is only for Developing this plugin*/
-    public void debug(){
-        if (!debug) return;
-
-        getServer().getCommandMap().register("ekick", new KickExample());
-    }
 }

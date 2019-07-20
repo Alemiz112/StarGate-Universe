@@ -19,7 +19,7 @@ public class KickExample extends Command {
         }
         Player player = (Player) sender;
 
-        StarGateUniverse.getInstance().kickPlayer(player, "Test");
+        StarGateUniverse.getInstance().kickPlayer(player, "EnchanedResponseCheckTask");
         return true;
     }
 }

@@ -63,3 +63,5 @@ this.encoded = convertor.getPacketString();
 String[] data = Convertor.getPacketStringData(packetString);
 int PacketId = Convertor.getInt(data[0]);
 ```
+#### ResponseCheckTask
+Please consider looking [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests).

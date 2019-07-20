@@ -3,12 +3,14 @@ package alemiz.sgu.client;
 import alemiz.sgu.StarGateUniverse;
 import alemiz.sgu.packets.StarGatePacket;
 import alemiz.sgu.packets.WelcomePacket;
+import alemiz.sgu.tasks.ResponseRemoveTask;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.UUID;
 
 public class Client extends Thread {
 
@@ -73,6 +75,16 @@ public class Client extends Thread {
                                 out.println("0x02!"+ data[1] +"!"+name);
                                 break;
                             }
+                            if (message.startsWith("GATE_RESPONSE")){
+                                String[] data = message.split(":");
+                                String uuid = data[1];
+                                String response = data[2];
+
+                                sgu.responses.put(uuid, response);
+                                /* 20*30 is maximum toleranted delay*/
+                                sgu.getServer().getScheduler().scheduleDelayedTask(new ResponseRemoveTask(uuid), 20*30);
+                                break;
+                            }
 
                             sgu.processPacket(message);
                             break;
@@ -133,20 +145,22 @@ public class Client extends Thread {
     }
 
     /* This function we use to send packet to Clients*/
-    public void gatePacket(StarGatePacket packet){
-        String data;
+    public String gatePacket(StarGatePacket packet){
+        String packetString;
         if (!packet.isEncoded) {
             packet.encode();
         }
-        data = packet.encoded;
+        packetString = packet.encoded;
+        String uuid = UUID.randomUUID().toString();
 
         try {
-            out.println(data);
+            out.println(packetString +"!"+ uuid);
             //sgu.getLogger().info("§6"+data);
         }catch (Exception e){
             sgu.getLogger().info("§cWARNING: Packet was not sent!");
             sgu.getLogger().info("§c"+e.getMessage());
         }
+        return uuid;
     }
 
     private void welcome(){

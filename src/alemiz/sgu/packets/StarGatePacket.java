@@ -18,6 +18,9 @@ public abstract class StarGatePacket implements Cloneable{
     public String encoded;
     public boolean isEncoded = true;
 
+    /* UUID is used for returning response if is needed*/
+    public String uuid;
+
     /** We use this functions to be able work with string compression
      * encode() => Converts data to string and save it tp $encoded
      * decode() => Converts from string in $encoded and saves it
