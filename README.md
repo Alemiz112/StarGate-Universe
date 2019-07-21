@@ -16,6 +16,7 @@ You can access StarGate-Universe by ``StarGateUniverse.getInstance()``
 - ``RegisterPacket(StarGatePacket packet)`` Really simple method for registring Packet
 - ``putPacket(StarGatePacket packet)`` This allows you to send packet. Packet must be registered first
 - ``kickPlayer(Player player, String reason)``  Kick player from any server connected to StarGate network
+- ``isOnline(Player player)`` Check if player is online. Sends back response 'true!server' or 'false'. Examples [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests#playeronline-response).
 ##### Example:
 ```java
 Player player = PLUGIN.getServer().getPlayer("alemiz003");

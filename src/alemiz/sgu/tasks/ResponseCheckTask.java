@@ -8,11 +8,11 @@ import java.util.Map;
 
 public abstract class ResponseCheckTask extends Task{
 
-    private String uuid;
-    private String expectedResult;
+    protected String uuid;
+    protected String expectedResult;
 
     /* This should be instance of your plugin.*/
-    private PluginBase plugin;
+    protected PluginBase plugin;
 
     /* This is maximum delay in SECONDS that is tolerated by ping.
     If delay is bigger response will be removed. Also clients will be disconnected!*/
@@ -21,6 +21,7 @@ public abstract class ResponseCheckTask extends Task{
     public ResponseCheckTask(PluginBase plugin, String uuid, String expectedResult){
         this.uuid = uuid;
         this.expectedResult = expectedResult;
+        this.plugin = plugin;
     }
 
     @Override

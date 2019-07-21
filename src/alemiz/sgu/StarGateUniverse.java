@@ -1,6 +1,7 @@
 package alemiz.sgu;
 
 import alemiz.sgu.packets.*;
+import tests.OnlineCommand;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
@@ -123,6 +124,17 @@ public class StarGateUniverse extends PluginBase {
 
         packet.isEncoded = false;
         putPacket(packet);
+    }
+    /* We can check if player is online somewhere in network
+    * After sending packet we must handle response by UUID
+    * Example can be found in /tests/OnlineExample.java*/
+    public String isOnline(Player player){
+        if (player == null) return null;
+        PlayerOnlinePacket packet = new PlayerOnlinePacket();
+
+        packet.player = player;
+        packet.isEncoded = false;
+        return putPacket(packet);
     }
 
 }
