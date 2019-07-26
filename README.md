@@ -34,6 +34,10 @@ public StarGatePacket getPacket() {
   return packet;
 }
 ```
+#### 📞ResponseCheckTask
+Response checking is useful when we want to get some data created by packet back to client.</br> 
+For more info please consider looking [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests).
+
 #### ⚙️Creating Own Packets
 For better understanding please read [StarGatePacket](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/alemiz/sgu/packets/StarGatePacket.java) and [WelcomePacket](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/alemiz/sgu/packets/WelcomePacket.java)
 #### Convertor
@@ -64,5 +68,3 @@ this.encoded = convertor.getPacketString();
 String[] data = Convertor.getPacketStringData(packetString);
 int PacketId = Convertor.getInt(data[0]);
 ```
-#### ResponseCheckTask
-Please consider looking [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests).

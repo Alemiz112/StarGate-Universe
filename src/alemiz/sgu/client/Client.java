@@ -155,7 +155,7 @@ public class Client extends Thread {
 
         try {
             out.println(packetString +"!"+ uuid);
-            //sgu.getLogger().info("§6"+data);
+            //sgu.getLogger().info("§6"+packetString +"!"+ uuid);
         }catch (Exception e){
             sgu.getLogger().info("§cWARNING: Packet was not sent!");
             sgu.getLogger().info("§c"+e.getMessage());

@@ -1,9 +1,9 @@
 package alemiz.sgu;
 
 import alemiz.sgu.packets.*;
-import tests.OnlineCommand;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
@@ -54,6 +54,7 @@ public class StarGateUniverse extends PluginBase {
         RegisterPacket(new PingPacket());
         RegisterPacket(new PlayerTransferPacket());
         RegisterPacket(new KickPacket());
+        RegisterPacket(new ForwardPacket());
     }
 
     /* Using these function we can process packet from string to data
@@ -135,6 +136,20 @@ public class StarGateUniverse extends PluginBase {
         packet.player = player;
         packet.isEncoded = false;
         return putPacket(packet);
+    }
+
+    /* Using ForwardPacket you can forward packet to other client*/
+    public void forwardPacket(String client, StarGatePacket packet){
+        ForwardPacket forwardPacket = new ForwardPacket();
+        forwardPacket.client = client;
+
+        if (!packet.isEncoded){
+            packet.encode();
+        }
+
+        forwardPacket.encodedPacket = packet.encoded;
+        forwardPacket.isEncoded = false;
+        putPacket(forwardPacket);
     }
 
 }
