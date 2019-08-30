@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.org/Alemiz112/StarGate-Universe.svg?branch=master)](https://travis-ci.org/Alemiz112/StarGate-Universe) [![Jenkins](http://jenkins.mizerak.eu/job/StarGate-Universe/badge/icon)](http://jenkins.mizerak.eu/job/StarGate-Universe/)
 > This is stable and fast plugin for nukkit that allows server connect to WaterDog plugin StarGate. It make easyer communication between server. Includes API fur custom packets, transfering players and more
 
+Download [here](http://jenkins.mizerak.eu/job/StarGate-Universe/)!
+
 ## 🎯Features:
 - Fast communication between servers
 - Custom packets
