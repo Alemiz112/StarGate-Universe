@@ -36,6 +36,18 @@ public class StarGateUniverse extends PluginBase {
         initPackets();
 
         getLogger().info("§aEnabling StarGate Universe: Client");
+
+        /*getServer().getScheduler().scheduleDelayedTask(new Task() {
+            @Override
+            public void onRun(int i) {
+                ForwardPacket forwardPacket = new ForwardPacket();
+                forwardPacket.client = "Lobby2";
+
+                forwardPacket.encodedPacket = "0x10!I was forwarded!to you";
+                forwardPacket.isEncoded = false;
+                putPacket(forwardPacket);
+            }
+        }, 20*5);*/
     }
 
     public static StarGateUniverse getInstance() {
