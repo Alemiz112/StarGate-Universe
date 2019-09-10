@@ -92,9 +92,10 @@ public class Client extends Thread {
 
                 }catch (Exception e){
                     sgu.getLogger().info("§cWARNING: Error while reading from StarGate server!");
-                    sgu.getLogger().info("§c"+e.getMessage());
+                    sgu.getLogger().info("§c"+e);
 
-                    if (e.getMessage().equals("Connection reset")){
+
+                    if (e.getMessage() == null || e.getMessage().equals("Connection reset")){
                         connect();
                         end = true;
                     }
