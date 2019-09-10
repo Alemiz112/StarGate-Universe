@@ -150,6 +150,16 @@ public class StarGateUniverse extends PluginBase {
         return putPacket(packet);
     }
 
+    public String isOnline(String player){
+        if (player == null) return null;
+
+        PlayerOnlinePacket packet = new PlayerOnlinePacket();
+        packet.customPlayer = player;
+
+        packet.isEncoded = false;
+        return  putPacket(packet);
+    }
+
     /* Using ForwardPacket you can forward packet to other client*/
     public void forwardPacket(String client, StarGatePacket packet){
         ForwardPacket forwardPacket = new ForwardPacket();

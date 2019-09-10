@@ -1,8 +1,7 @@
 # StarGate-Universe
 [![Build Status](https://travis-ci.org/Alemiz112/StarGate-Universe.svg?branch=master)](https://travis-ci.org/Alemiz112/StarGate-Universe) [![Jenkins](http://jenkins.mizerak.eu/job/StarGate-Universe/badge/icon)](http://jenkins.mizerak.eu/job/StarGate-Universe/)
-> This is stable and fast plugin for nukkit that allows server connect to WaterDog plugin StarGate. It make easyer communication between server. Includes API fur custom packets, transfering players and more
-
-Download [here](http://jenkins.mizerak.eu/job/StarGate-Universe/)!
+> This is stable and fast plugin for nukkit that allows server connect to WaterDog plugin StarGate. It make easyer communication between server. Includes API fur custom packets, transfering players and more 
+</br> Download [here](http://jenkins.mizerak.eu/job/StarGate-Universe/)!
 
 ## 🎯Features:
 - Fast communication between servers
@@ -19,6 +18,7 @@ You can access StarGate-Universe by ``StarGateUniverse.getInstance()``
 - ``putPacket(StarGatePacket packet)`` This allows you to send packet. Packet must be registered first
 - ``kickPlayer(Player player, String reason)``  Kick player from any server connected to StarGate network
 - ``isOnline(Player player)`` Check if player is online. Sends back response 'true!server' or 'false'. Examples [here](https://github.com/Alemiz112/StarGate-Universe/tree/master/src/tests#playeronline-response).
+- ``forwardPacket(String client, StarGatePacket packet)`` Using ForwardPacket you can forward packet to other client/server
 ##### Example:
 ```java
 Player player = PLUGIN.getServer().getPlayer("alemiz003");
