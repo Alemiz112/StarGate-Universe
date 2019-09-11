@@ -40,12 +40,9 @@ public class StarGateUniverse extends PluginBase {
         /*getServer().getScheduler().scheduleDelayedTask(new Task() {
             @Override
             public void onRun(int i) {
-                ForwardPacket forwardPacket = new ForwardPacket();
-                forwardPacket.client = "Lobby2";
-
-                forwardPacket.encodedPacket = "0x10!I was forwarded!to you";
-                forwardPacket.isEncoded = false;
-                putPacket(forwardPacket);
+                for (int x = 0; x < 1000; x++){
+                    isOnline("bob");
+                }
             }
         }, 20*5);*/
     }
@@ -71,14 +68,14 @@ public class StarGateUniverse extends PluginBase {
 
     /* Using these function we can process packet from string to data
      *  After packet is successfully created we can handle that Packet*/
-    public boolean processPacket(String packetString){
+    public boolean processPacket(String packetString) throws IllegalAccessException, InstantiationException{
         String[] data = Convertor.getPacketStringData(packetString);
         int PacketId = Integer.decode(data[0]);
 
         if (!packets.containsKey(PacketId) || packets.get(PacketId) == null) return false;
 
         /* Here we decode Packet. Create from String Data*/
-        StarGatePacket packet = packets.get(PacketId);
+        StarGatePacket packet = packets.get(PacketId).getClass().newInstance();
         String uuid = data[data.length - 1];
 
         packet.uuid = uuid;
