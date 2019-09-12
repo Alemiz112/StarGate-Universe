@@ -55,6 +55,8 @@ public class Client extends Thread {
             boolean end = false;
             while (!end){
                 try {
+                    if (socket.getInputStream().available() < 0) continue;
+
                     String message = in.readLine();
 
                     switch (message){
@@ -65,7 +67,7 @@ public class Client extends Thread {
                             end = true;
                             break;
                         default:
-                            sgu.getLogger().info("§e"+message);
+                            //sgu.getLogger().info("§e"+message);
 
                             /* This is just patch for resending ping data*/
                             if (message.startsWith("GATE_PING")){
@@ -81,7 +83,7 @@ public class Client extends Thread {
                                 String response = data[2];
 
                                 sgu.responses.put(uuid, response);
-                                /* 20*30 is maximum toleranted delay*/
+                                /* 20*30 is maximum tolerated delay*/
                                 sgu.getServer().getScheduler().scheduleDelayedTask(new ResponseRemoveTask(uuid), 20*30);
                                 break;
                             }
