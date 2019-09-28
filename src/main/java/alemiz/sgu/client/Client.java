@@ -74,7 +74,6 @@ public class Client extends Thread {
                                 String[] data = message.split(":");
                                 String name = StarGateUniverse.getInstance().cfg.getString("Client");
 
-                                out.println("0x02!"+ data[1] +"!"+name);
                                 break;
                             }
                             if (message.startsWith("GATE_RESPONSE")){

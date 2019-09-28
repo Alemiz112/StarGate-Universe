@@ -50,4 +50,14 @@ public abstract class ResponseCheckTask extends Task{
 
     /* This function will be called if result will be never fetched*/
     public abstract void error();
+
+    /* Allows you to schedule task without calling Scheduler separately*/
+    public void scheduleTask(int delay){
+        plugin.getServer().getScheduler().scheduleDelayedTask(this, delay);
+    }
+
+    /* In Async it will work great too!*/
+    public void scheduleAsync(int delay){
+        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, this, delay, true);
+    }
 }
