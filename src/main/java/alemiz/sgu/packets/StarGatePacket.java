@@ -4,6 +4,8 @@ package alemiz.sgu.packets;
 * Your packet must extend this class so 'extends StarGatePacket'
 * I recommend to look into some official packet to better understanding*/
 
+import alemiz.sgu.StarGateUniverse;
+
 public abstract class StarGatePacket implements Cloneable{
 
     /* Literally its packet Name*/
@@ -39,6 +41,11 @@ public abstract class StarGatePacket implements Cloneable{
     public StarGatePacket(String type, int ID){
         this.type = type;
         this.ID = ID;
+    }
+
+    /* Put packet to server*/
+    public String putPacket(){
+        return StarGateUniverse.getInstance().putPacket(this);
     }
 
     public String getType(){

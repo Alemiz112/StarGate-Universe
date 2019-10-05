@@ -92,13 +92,15 @@ public class Client extends Thread {
                     }
 
                 }catch (Exception e){
-                    sgu.getLogger().info("§cWARNING: Error while reading from StarGate server!");
-                    sgu.getLogger().info("§c"+e);
-
-
                     if (e.getMessage() == null || e.getMessage().equals("Connection reset")){
+                        sgu.getLogger().info("§cWARNING: Connection aborted! StarGate connection was unexpectedly closed!");
+                        sgu.getLogger().info("§cTrying to reconnect...");
+
                         connect();
                         end = true;
+                    }else{
+                        sgu.getLogger().info("§cWARNING: Error while reading from StarGate server!");
+                        sgu.getLogger().info("§c"+e);
                     }
                 }
             }
