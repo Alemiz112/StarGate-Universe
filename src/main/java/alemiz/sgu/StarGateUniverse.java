@@ -64,15 +64,16 @@ public class StarGateUniverse extends PluginBase {
         RegisterPacket(new PlayerTransferPacket());
         RegisterPacket(new KickPacket());
         RegisterPacket(new ForwardPacket());
+        RegisterPacket(new ConnectionInfoPacket());
     }
 
     /* Using these function we can process packet from string to data
      *  After packet is successfully created we can handle that Packet*/
-    public boolean processPacket(String packetString) throws IllegalAccessException, InstantiationException{
+    public StarGatePacket processPacket(String packetString) throws IllegalAccessException, InstantiationException{
         String[] data = Convertor.getPacketStringData(packetString);
         int PacketId = Integer.decode(data[0]);
 
-        if (!packets.containsKey(PacketId) || packets.get(PacketId) == null) return false;
+        if (!packets.containsKey(PacketId) || packets.get(PacketId) == null) return null;
 
         /* Here we decode Packet. Create from String Data*/
         StarGatePacket packet = packets.get(PacketId).getClass().newInstance();
@@ -84,7 +85,7 @@ public class StarGateUniverse extends PluginBase {
         packet.decode();
 
         handlePacket(packet);
-        return true;
+        return packet;
     }
 
     private void handlePacket(StarGatePacket packet){

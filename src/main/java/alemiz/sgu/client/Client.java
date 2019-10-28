@@ -1,9 +1,11 @@
 package alemiz.sgu.client;
 
 import alemiz.sgu.StarGateUniverse;
+import alemiz.sgu.packets.ConnectionInfoPacket;
 import alemiz.sgu.packets.StarGatePacket;
 import alemiz.sgu.packets.WelcomePacket;
 import alemiz.sgu.tasks.ResponseRemoveTask;
+import alemiz.sgu.untils.ArrayUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +15,12 @@ import java.net.Socket;
 import java.util.UUID;
 
 public class Client extends Thread {
+
+    public String address = "127.0.0.1";
+    public int port = 47007;
+    public String password = "123456789";
+
+    public String name = null;
 
     protected Socket socket;
     protected BufferedReader in;
@@ -38,18 +46,35 @@ public class Client extends Thread {
             while (!read){
                 try {
                     String iris = in.readLine();
+                    System.out.println(iris);
 
-                    if (iris.equals("GATE_OPENED")){
-                        read = true;
+                    StarGatePacket irisPacket = sgu.processPacket(iris);
+                    if (irisPacket instanceof ConnectionInfoPacket){
+                        int type = ((ConnectionInfoPacket) irisPacket).getPacketType();
+
+                        if (type == ConnectionInfoPacket.CONNECTION_ABORTED){
+                            String reason = ((ConnectionInfoPacket) irisPacket).getReason();
+
+                            sgu.getLogger().warning("§cERROR: StarGate client was not authenticated! Reason: §4"+((reason == null) ? "unknown" : reason));
+                            canConnect = false;
+                            return;
+                        }
+
+                        if (type == ConnectionInfoPacket.CONNECTION_CONNECTED){
+                            read = true;
+                        }
                     }
 
                 }catch (IOException e){
                     sgu.getLogger().info("§cWARNING: Error while opening iris!");
                     connect();
+                }catch (Exception e){
+                    sgu.getLogger().info("§cWARNING: Error while opening iris!");
+                    sgu.getLogger().info("§c"+e);
+                    connect();
                 }
             }
 
-            //out.println("0x01!Test_Server!20!58!12");
             welcome();
 
             boolean end = false;
@@ -59,7 +84,7 @@ public class Client extends Thread {
 
                     String message = in.readLine();
 
-                    switch (message){
+                    switch (message){ //TODO: Reconnect by ConnectionInfoPacket
                         case "GATE_RECONNECT":
                             close();
                             connect();
@@ -110,8 +135,9 @@ public class Client extends Thread {
 
     public void connect(){
         try {
-            String address = StarGateUniverse.getInstance().cfg.getString("Address");
-            int port = StarGateUniverse.getInstance().cfg.getInt("Port");
+            address = StarGateUniverse.getInstance().cfg.getString("Address");
+            port = StarGateUniverse.getInstance().cfg.getInt("Port");
+            password = StarGateUniverse.getInstance().cfg.getString("Password");
 
             socket = new Socket(address, port);
 
@@ -127,8 +153,14 @@ public class Client extends Thread {
         }
 
         try {
-            String name = StarGateUniverse.getInstance().cfg.getString("Client");
-            out.println("CHEVRON:"+name);
+            name = StarGateUniverse.getInstance().cfg.getString("Client");
+
+            String[] handshakeData = new String[3];
+            handshakeData[0] = "CHEVRON";
+            handshakeData[1] = name;
+            handshakeData[2] = password;
+
+            out.println(ArrayUtils.implode(":", handshakeData));
             canConnect = true;
 
             sgu.getLogger().info("§aDone! Successfully connected to StarGate server! Authenticating ...");
