@@ -2,6 +2,7 @@ package alemiz.sgu.client;
 
 import alemiz.sgu.StarGateUniverse;
 import alemiz.sgu.packets.ConnectionInfoPacket;
+import alemiz.sgu.packets.PingPacket;
 import alemiz.sgu.packets.StarGatePacket;
 import alemiz.sgu.packets.WelcomePacket;
 import alemiz.sgu.tasks.ResponseRemoveTask;
@@ -46,7 +47,6 @@ public class Client extends Thread {
             while (!read){
                 try {
                     String iris = in.readLine();
-                    System.out.println(iris);
 
                     StarGatePacket irisPacket = sgu.processPacket(iris);
                     if (irisPacket instanceof ConnectionInfoPacket){
@@ -81,39 +81,55 @@ public class Client extends Thread {
             while (!end){
                 try {
                     if (socket.getInputStream().available() < 0) continue;
-
                     String message = in.readLine();
 
-                    switch (message){ //TODO: Reconnect by ConnectionInfoPacket
-                        case "GATE_RECONNECT":
-                            close();
-                            connect();
+                    if (message.startsWith("GATE_STATUS")){
 
-                            end = true;
-                            break;
-                        default:
-                            //sgu.getLogger().info("§e"+message);
+                        continue;
+                    }
 
-                            /* This is just patch for resending ping data*/
-                            if (message.startsWith("GATE_PING")){
-                                String[] data = message.split(":");
-                                String name = StarGateUniverse.getInstance().cfg.getString("Client");
+                    /* This is just patch for resending ping data*/
+                    if (message.startsWith("GATE_PING")){
+                        String[] data = message.split(":");
+                        String name = StarGateUniverse.getInstance().cfg.getString("Client");
 
+                        gatePacket(new PingPacket(){{
+                            client = name;
+                            pingData = data[1];
+                            //isEncoded = false;
+                        }});
+                        continue;
+                    }
+                    if (message.startsWith("GATE_RESPONSE")){
+                        String[] data = message.split(":");
+                        String uuid = data[1];
+                        String response = data[2];
+
+                        sgu.responses.put(uuid, response);
+                        /* 20*30 is maximum tolerated delay*/
+                        sgu.getServer().getScheduler().scheduleDelayedTask(new ResponseRemoveTask(uuid), 20*30);
+                        continue;
+                    }
+
+                    StarGatePacket packet = sgu.processPacket(message);
+                    if (packet instanceof ConnectionInfoPacket){
+                        String reason = ((ConnectionInfoPacket) packet).getReason();
+
+                        switch (((ConnectionInfoPacket) packet).getPacketType()){
+                            case ConnectionInfoPacket.CONNECTION_RECONNECT:
+                                sgu.getLogger().info("§cWARNING: Reconnecting to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
+
+                                close();
+                                connect();
+                                end = true;
                                 break;
-                            }
-                            if (message.startsWith("GATE_RESPONSE")){
-                                String[] data = message.split(":");
-                                String uuid = data[1];
-                                String response = data[2];
-
-                                sgu.responses.put(uuid, response);
-                                /* 20*30 is maximum tolerated delay*/
-                                sgu.getServer().getScheduler().scheduleDelayedTask(new ResponseRemoveTask(uuid), 20*30);
+                            case ConnectionInfoPacket.CONNECTION_CLOSED:
+                                sgu.getLogger().info("§cWARNING: Connection to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
+                                close();
+                                end = true;
                                 break;
-                            }
-
-                            sgu.processPacket(message);
-                            break;
+                        }
+                        continue;
                     }
 
                 }catch (Exception e){
@@ -176,7 +192,7 @@ public class Client extends Thread {
             in.close();
             socket.close();
         }catch (IOException e){
-            sgu.getLogger().critical("ERROR: While connection closing"+e.getMessage());
+            sgu.getLogger().critical("ERROR: While connection closing connection"+e.getMessage());
         }
     }
 

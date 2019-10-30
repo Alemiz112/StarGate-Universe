@@ -84,7 +84,9 @@ public class StarGateUniverse extends PluginBase {
         packet.encoded = packetString;
         packet.decode();
 
-        handlePacket(packet);
+        if (!(packet instanceof ConnectionInfoPacket)){
+            handlePacket(packet);
+        }
         return packet;
     }
 
