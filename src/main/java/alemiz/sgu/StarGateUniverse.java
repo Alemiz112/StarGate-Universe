@@ -47,6 +47,11 @@ public class StarGateUniverse extends PluginBase {
         }, 20*5);*/
     }
 
+    @Override
+    public void onDisable() {
+        client.close(ConnectionInfoPacket.CLIENT_SHUTDOWN);
+    }
+
     public static StarGateUniverse getInstance() {
         return instance;
     }

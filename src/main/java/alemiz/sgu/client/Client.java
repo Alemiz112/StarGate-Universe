@@ -61,6 +61,7 @@ public class Client extends Thread {
                         }
 
                         if (type == ConnectionInfoPacket.CONNECTION_CONNECTED){
+                            isConnected = true;
                             read = true;
                         }
                     }
@@ -78,7 +79,7 @@ public class Client extends Thread {
             welcome();
 
             boolean end = false;
-            while (!end){
+            while (!end && isConnected){
                 try {
                     if (socket.getInputStream().available() < 0) continue;
                     String message = in.readLine();
@@ -119,13 +120,13 @@ public class Client extends Thread {
                             case ConnectionInfoPacket.CONNECTION_RECONNECT:
                                 sgu.getLogger().info("§cWARNING: Reconnecting to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
 
-                                close();
+                                force_close();
                                 connect();
                                 end = true;
                                 break;
                             case ConnectionInfoPacket.CONNECTION_CLOSED:
                                 sgu.getLogger().info("§cWARNING: Connection to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
-                                close();
+                                force_close();
                                 end = true;
                                 break;
                         }
@@ -164,7 +165,6 @@ public class Client extends Thread {
             sgu.getLogger().critical("§cERROR: Unable to connect to StarGate server!");
             sgu.getLogger().critical("§c"+e.getMessage());
             canConnect = false;
-
             return;
         }
 
@@ -187,7 +187,23 @@ public class Client extends Thread {
     }
 
     public void close(){
+        close(null);
+    }
+
+    public void close(String reason){
+        ConnectionInfoPacket packet = new ConnectionInfoPacket();
+        packet.packetType = ConnectionInfoPacket.CONNECTION_CLOSED;
+        packet.reason = reason;
+        packet.putPacket();
+
+        force_close();
+    }
+
+    public void force_close(){
         try {
+            isConnected = false;
+            canConnect = false;
+
             out.close();
             in.close();
             socket.close();
