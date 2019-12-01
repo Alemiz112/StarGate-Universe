@@ -134,6 +134,11 @@ public class Client extends Thread {
                     }
 
                 }catch (Exception e){
+                    /* Ignore errors while disconnecting*/
+                    if (!isConnected){
+                        return;
+                    }
+
                     if (e.getMessage() == null || e.getMessage().equals("Connection reset")){
                         sgu.getLogger().info("§cWARNING: Connection aborted! StarGate connection was unexpectedly closed!");
                         sgu.getLogger().info("§cTrying to reconnect...");
@@ -207,7 +212,7 @@ public class Client extends Thread {
             out.close();
             in.close();
             socket.close();
-        }catch (IOException e){
+        }catch (Exception e){
             sgu.getLogger().critical("ERROR: While connection closing connection"+e.getMessage());
         }
     }
