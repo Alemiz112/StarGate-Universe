@@ -196,6 +196,8 @@ public class Client extends Thread {
     }
 
     public void close(String reason){
+        if (!canConnect || !isConnected) return;
+
         ConnectionInfoPacket packet = new ConnectionInfoPacket();
         packet.packetType = ConnectionInfoPacket.CONNECTION_CLOSED;
         packet.reason = reason;
