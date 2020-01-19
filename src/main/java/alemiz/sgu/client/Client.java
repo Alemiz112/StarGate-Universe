@@ -170,6 +170,7 @@ public class Client extends Thread {
             sgu.getLogger().critical("§cERROR: Unable to connect to StarGate server!");
             sgu.getLogger().critical("§c"+e.getMessage());
             canConnect = false;
+            isConnected = false;
             return;
         }
 
@@ -188,6 +189,7 @@ public class Client extends Thread {
         }catch (Exception e){
             sgu.getLogger().info("§cWARNING: Unable to authenticate StarGate client! Please try to restart server");
             canConnect = false;
+            isConnected = false;
         }
     }
 
@@ -215,7 +217,7 @@ public class Client extends Thread {
             in.close();
             socket.close();
         }catch (Exception e){
-            sgu.getLogger().critical("ERROR: While connection closing connection"+e.getMessage());
+            sgu.getLogger().critical("§cERROR: While connection closing connection"+e.getMessage());
         }
     }
 
@@ -251,5 +253,17 @@ public class Client extends Thread {
         packet.isEncoded = false;
 
         gatePacket(packet);
+    }
+
+    public boolean canConnect() {
+        return canConnect;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public StarGateUniverse getSgu() {
+        return sgu;
     }
 }

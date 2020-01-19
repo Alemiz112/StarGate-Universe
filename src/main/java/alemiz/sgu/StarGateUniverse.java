@@ -1,9 +1,9 @@
 package alemiz.sgu;
 
 import alemiz.sgu.packets.*;
+import alemiz.sgu.tasks.ReconnectTask;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
@@ -29,11 +29,13 @@ public class StarGateUniverse extends PluginBase {
         saveDefaultConfig();
         this.cfg = getConfig();
 
+        initPackets();
+
         /* Starting Client for StarGate*/
         client = new Client();
         client.start();
 
-        initPackets();
+        getServer().getScheduler().scheduleDelayedRepeatingTask(new ReconnectTask(), 20*30, 20*60*5);
 
         getLogger().info("§aEnabling StarGate Universe: Client");
 
@@ -105,6 +107,10 @@ public class StarGateUniverse extends PluginBase {
                         callEvent(new CustomPacketEvent(packet));
                 break;
         }
+    }
+
+    public Client getClient() {
+        return client;
     }
 
     /* Beginning of API section*/
