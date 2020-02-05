@@ -40,7 +40,10 @@ public class Client extends Thread {
     public void run() {
         /* Creating first connection*/
         connect();
+        tickProcessor();
+    }
 
+    public void tickProcessor(){
         while (canConnect){
             boolean read = false;
 
@@ -85,7 +88,6 @@ public class Client extends Thread {
                     String message = in.readLine();
 
                     if (message.startsWith("GATE_STATUS")){
-
                         continue;
                     }
 
@@ -152,7 +154,6 @@ public class Client extends Thread {
                 }
             }
         }
-
     }
 
     public void connect(){

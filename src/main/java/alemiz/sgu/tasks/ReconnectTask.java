@@ -11,7 +11,11 @@ public class ReconnectTask extends Task {
         Client client =  StarGateUniverse.getInstance().getClient();
        if (!client.canConnect() && !client.isConnected()){
            client.getSgu().getLogger().info("§eReloading StarGate Client");
-           client.run();
+
+           /* Close old sockets first*/
+           client.force_close();
+
+           StarGateUniverse.getInstance().restart();
        }
     }
 }

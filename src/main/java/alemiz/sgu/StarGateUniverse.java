@@ -62,6 +62,13 @@ public class StarGateUniverse extends PluginBase {
         return responses;
     }
 
+    /*Reload whole client if needed
+    * Make sure that old sockets are closed properly*/
+    public void restart(){
+        client = new Client();
+        client.start();
+    }
+
     /**
      * Here we are registring new Packets, may be useful for DEV
      * Every packet Extends @class StarGatePacket*/
