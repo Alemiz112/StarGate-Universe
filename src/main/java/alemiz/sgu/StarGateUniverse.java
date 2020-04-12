@@ -4,6 +4,7 @@ import alemiz.sgu.packets.*;
 import alemiz.sgu.tasks.ReconnectTask;
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
@@ -15,12 +16,11 @@ import java.util.Map;
 public class StarGateUniverse extends PluginBase {
 
     public Config cfg;
-    private Client client;
-
     private static StarGateUniverse instance;
 
-    protected static Map<Integer, StarGatePacket> packets = new HashMap<>();
+    protected Map<String, Client> clients = new HashMap<>();
 
+    protected static Map<Integer, StarGatePacket> packets = new HashMap<>();
     public Map<String, String> responses = new HashMap<>();
 
     @Override
@@ -28,45 +28,61 @@ public class StarGateUniverse extends PluginBase {
         instance = this;
         saveDefaultConfig();
         this.cfg = getConfig();
+        this.initPackets();
 
-        initPackets();
+        for (String clientName : this.cfg.getSection("connections").getKeys(false)){
+            this.start(clientName);
+        }
 
-        /* Starting Client for StarGate*/
-        client = new Client();
-        client.start();
+        this.getServer().getScheduler().scheduleDelayedRepeatingTask(new ReconnectTask(), 20*30, 20*60*5);
+        this.getLogger().info("§aEnabling StarGate Universe: Client");
 
-        getServer().getScheduler().scheduleDelayedRepeatingTask(new ReconnectTask(), 20*30, 20*60*5);
-
-        getLogger().info("§aEnabling StarGate Universe: Client");
-
-        /*getServer().getScheduler().scheduleDelayedTask(new Task() {
+        /*this.getServer().getScheduler().scheduleDelayedTask(new Task() {
             @Override
             public void onRun(int i) {
-                for (int x = 0; x < 1000; x++){
-                    isOnline("bob");
-                }
+                new DockerContainerCreate().startNewLobby("lobby4", "cubemc-lobby");
             }
-        }, 20*5);*/
+        }, 20*10);*/
     }
 
     @Override
     public void onDisable() {
-        client.close(ConnectionInfoPacket.CLIENT_SHUTDOWN);
+        Map<String, Client> clients = new HashMap<>(this.clients);
+
+        clients.forEach((String name, Client client)->{
+            client.close(ConnectionInfoPacket.CLIENT_SHUTDOWN, true);
+        });
     }
 
     public static StarGateUniverse getInstance() {
         return instance;
     }
 
-    public Map<String, String> getResponses() {
-        return responses;
+    private void start(String name){
+        if (name == null || this.cfg.getSection(name) == null) return;
+
+        Client client = new Client();
+        client.name = this.cfg.getString("connections."+name+".name");
+        client.configName = name;
+        client.address = this.cfg.getString("connections."+name+".address");
+        client.port = Integer.parseInt(this.cfg.getString("connections."+name+".port"));
+        client.password = this.cfg.getString("connections."+name+".password");
+
+        this.clients.put(name, client);
+        client.start();
     }
 
     /*Reload whole client if needed
     * Make sure that old sockets are closed properly*/
-    public void restart(){
-        client = new Client();
-        client.start();
+    public void restart(String name){
+        this.getLogger().info("§eReloading StarGate Client "+name);
+
+        this.clients.remove(name);
+        this.start(name);
+    }
+
+    public boolean removeClient(String clientName){
+        return this.clients.remove(clientName) != null;
     }
 
     /**
@@ -79,6 +95,7 @@ public class StarGateUniverse extends PluginBase {
         RegisterPacket(new KickPacket());
         RegisterPacket(new ForwardPacket());
         RegisterPacket(new ConnectionInfoPacket());
+        RegisterPacket(new ServerManagePacket());
     }
 
     /* Using these function we can process packet from string to data
@@ -96,7 +113,14 @@ public class StarGateUniverse extends PluginBase {
         packet.uuid = uuid;
 
         packet.encoded = packetString;
-        packet.decode();
+
+        try {
+            packet.decode();
+        }catch (Exception e){
+            this.getLogger().warning("§eUnable to decode packet with ID "+packet.getID());
+            this.getLogger().warning("§c"+e.getMessage());
+            return packet;
+        }
 
         if (!(packet instanceof ConnectionInfoPacket)){
             handlePacket(packet);
@@ -116,8 +140,12 @@ public class StarGateUniverse extends PluginBase {
         }
     }
 
-    public Client getClient() {
-        return client;
+    public Map<String, Client> getClients() {
+        return clients;
+    }
+
+    public Map<String, String> getResponses() {
+        return responses;
     }
 
     /* Beginning of API section*/
@@ -125,7 +153,12 @@ public class StarGateUniverse extends PluginBase {
     /* This allows you to send packet
     * Returns packets UUID*/
     public String putPacket(StarGatePacket packet){
-        return client.gatePacket(packet);
+        return this.putPacket(packet, "default");
+    }
+
+    public String putPacket(StarGatePacket packet, String clientName){
+        if (clientName == null || !this.clients.containsKey(clientName)) return null;
+        return this.clients.get(clientName).gatePacket(packet);
     }
 
     /* Really simple method for registring Packet*/
@@ -135,61 +168,100 @@ public class StarGateUniverse extends PluginBase {
 
     /* Transfering player to other server*/
     public void transferPlayer(Player player, String server){
+        this.transferPlayer(player, server, "default");
+    }
+
+    public void transferPlayer(Player player, String server, String client){
         if (player == null) return;
         PlayerTransferPacket packet = new PlayerTransferPacket();
-
         packet.player = player;
         packet.destination = server;
 
-        packet.isEncoded = false;
-        putPacket(packet);
+        packet.isEncoded = false; //This is no longer needed here
+        this.putPacket(packet, client);
     }
 
     /* Kick player from any server connected to StarGate network*/
     public void kickPlayer(Player player, String reason){
-        if (player == null) return;
-        KickPacket packet = new KickPacket();
+        this.kickPlayer(player, reason, "default");
+    }
 
+    public void kickPlayer(Player player, String reason, String client){
+        if (player == null) return;
+
+        KickPacket packet = new KickPacket();
         packet.player = player;
         packet.reason = reason;
-
-        packet.isEncoded = false;
-        putPacket(packet);
+        this.putPacket(packet, client);
     }
     /* We can check if player is online somewhere in network
     * After sending packet we must handle response by UUID
-    * Example can be found in /tests/OnlineExample.java*/
+    * Example can be found in /tests/OnlineExample.java
+    * Specifying client allows you to check on what Waterdog server player is connected*/
     public String isOnline(Player player){
-        if (player == null) return null;
-        PlayerOnlinePacket packet = new PlayerOnlinePacket();
+        return this.isOnline(player, "default");
+    }
 
+    public String isOnline(Player player, String client){
+        if (player == null) return null;
+
+        PlayerOnlinePacket packet = new PlayerOnlinePacket();
         packet.player = player;
-        packet.isEncoded = false;
-        return putPacket(packet);
+        return this.putPacket(packet, client);
     }
 
     public String isOnline(String player){
+        return this.isOnline(player, "default");
+    }
+
+    public String isOnline(String player, String client){
         if (player == null) return null;
 
         PlayerOnlinePacket packet = new PlayerOnlinePacket();
         packet.customPlayer = player;
-
-        packet.isEncoded = false;
-        return  putPacket(packet);
+        return this.putPacket(packet, client);
     }
 
     /* Using ForwardPacket you can forward packet to other client*/
-    public void forwardPacket(String client, StarGatePacket packet){
+    public void forwardPacket(String destClient, String localClient, StarGatePacket packet){
         ForwardPacket forwardPacket = new ForwardPacket();
-        forwardPacket.client = client;
+        forwardPacket.client = destClient;
 
         if (!packet.isEncoded){
             packet.encode();
         }
 
         forwardPacket.encodedPacket = packet.encoded;
-        forwardPacket.isEncoded = false;
-        putPacket(forwardPacket);
+        this.putPacket(forwardPacket, localClient);
     }
 
+    /** Proxy will send response with status: "STATUS_FAILED" or "STATUS_SUCCESS,server_name"
+     * Dont forget. Response can be handled using ResponseCheckTask
+     * Returned variable is UUID or packets used to handle response NOT response*/
+    public String addServer(String address, String port, String name){
+        return this.addServer(address, port, name, "default");
+    }
+
+    public String addServer(String address, String port, String name, String client){
+        ServerManagePacket packet = new ServerManagePacket();
+        packet.packetType = ServerManagePacket.SERVER_ADD;
+        packet.serverAddress = address;
+        packet.serverPort = port;
+        packet.serverName = name;
+
+        return this.putPacket(packet, client);
+    }
+
+    /* Response: "STATUS_SUCCESS" or "STATUS_NOT_FOUND" */
+    public String removeServer(String name){
+        return this.removeServer(name, "default");
+    }
+
+    public String removeServer(String name, String client){
+        ServerManagePacket packet = new ServerManagePacket();
+        packet.packetType = ServerManagePacket.SERVER_ADD;
+        packet.serverName = name;
+
+        return this.putPacket(packet, client);
+    }
 }

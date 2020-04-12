@@ -15,3 +15,6 @@ Here we will show how to handle response created by this packet.</br>
 We will again use [ResponseCheckTask](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/alemiz/sgu/tasks/ResponseCheckTask.java) for extending our class. 
 Our Example class is named [OnlineExample](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/tests/OnlineExample.java). This time we will create command that will send PlayerOnlinePacket 
 and then will check for response. Command class can be found [here](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/tests/OnlineCommand.java).
+
+## Docker Implementation Example
+`ServerManagePacket` has not its own implementation in API. You have to constuct it yourself. If you are not sure how to do it, checkout [example](https://github.com/Alemiz112/StarGate-Universe/blob/master/src/tests/DockerContainerCreate.java).

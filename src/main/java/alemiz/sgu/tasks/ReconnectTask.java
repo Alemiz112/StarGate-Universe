@@ -4,18 +4,20 @@ import alemiz.sgu.StarGateUniverse;
 import alemiz.sgu.client.Client;
 import cn.nukkit.scheduler.Task;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ReconnectTask extends Task {
 
     @Override
     public void onRun(int i) {
-        Client client =  StarGateUniverse.getInstance().getClient();
-       if (!client.canConnect() && !client.isConnected()){
-           client.getSgu().getLogger().info("§eReloading StarGate Client");
+        Map<String, Client> clients = new HashMap<>(StarGateUniverse.getInstance().getClients());
 
-           /* Close old sockets first*/
-           client.force_close();
-
-           StarGateUniverse.getInstance().restart();
-       }
+        clients.forEach((String name, Client client)->{
+            if (!client.isConnected()){
+                /* Close old sockets first*/
+                StarGateUniverse.getInstance().restart(name);
+            }
+        });
     }
 }

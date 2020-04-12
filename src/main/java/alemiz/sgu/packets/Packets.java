@@ -10,4 +10,5 @@ public interface Packets {
     int FORWARD_PACKET = 0x06;
     int CONNECTION_INFO_PACKET = 0x07;
 
+    int SERVER_MANAGE_PACKET = 0x10;
 }

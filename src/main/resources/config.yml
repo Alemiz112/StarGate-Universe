@@ -2,9 +2,10 @@
 ##Project by Alemiz
 #Website: https://github.com/Alemiz112
 
-#Name of client that will be shown to server
-Client: Lobby
-
-Address: 127.0.0.1
-Port: 47007
-Password: 123456789
+#Supports more connections
+connections:
+  default:
+    address: 127.0.0.1
+    port: 47007
+    password: 123456789
+    name: Lobby
