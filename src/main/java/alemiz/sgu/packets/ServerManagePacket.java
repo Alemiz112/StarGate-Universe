@@ -92,7 +92,7 @@ public class ServerManagePacket extends StarGatePacket {
                 convertor.putString(this.serverName);
                 convertor.putString(this.containerImage);
                 convertor.putString(String.join(",", this.exposedPorts));
-                if (envVariables != null) convertor.putString(String.join(",", this.envVariables));
+                if (this.envVariables != null) convertor.putString(String.join(",", this.envVariables));
                 if (this.dockerHost != null) convertor.putString(dockerHost);
                 break;
             case DOCKER_REMOVE:

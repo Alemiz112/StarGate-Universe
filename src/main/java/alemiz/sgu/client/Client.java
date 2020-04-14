@@ -49,6 +49,8 @@ public class Client extends Thread {
         String error;
         if ((error = this.connect()) != null){
             this.force_close();
+            this.sgu.getLogger().warning("§cUnable to connect to StarGate server §6@"+this.configName);
+            this.sgu.getLogger().warning("§cError: "+error);
             return;
         }
 

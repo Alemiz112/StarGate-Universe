@@ -1,14 +1,12 @@
 package alemiz.sgu.packets;
 
 
-import alemiz.sgu.StarGateUniverse;
 import alemiz.sgu.untils.Convertor;
-import cn.nukkit.Player;
 
 public class KickPacket extends StarGatePacket {
 
     public String reason;
-    public Player player;
+    public String player;
 
     public KickPacket(){
         super("KICK_PACKET", Packets.KICK_PACKET);
@@ -19,7 +17,7 @@ public class KickPacket extends StarGatePacket {
         isEncoded = false;
 
         String[] data = Convertor.getPacketStringData(encoded);
-        player = StarGateUniverse.getInstance().getServer().getPlayer(data[1]);
+        player = data[1];
         reason = data[2];
     }
 
@@ -27,7 +25,7 @@ public class KickPacket extends StarGatePacket {
     public void encode() {
         Convertor convertor = new Convertor(getID());
 
-        convertor.putString(player.getName());
+        convertor.putString(player);
         convertor.putString(reason);
 
         this.encoded = convertor.getPacketString();
@@ -40,7 +38,7 @@ public class KickPacket extends StarGatePacket {
         return null;
     }
 
-    public Player getPlayer() {
+    public String getPlayer() {
         return player;
     }
 

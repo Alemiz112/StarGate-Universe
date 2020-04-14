@@ -1,18 +1,15 @@
 package alemiz.sgu.packets;
 
 
-import alemiz.sgu.StarGateUniverse;
 import alemiz.sgu.untils.Convertor;
-import cn.nukkit.Player;
-import cn.nukkit.Server;
 
 public class PlayerTransferPacket extends StarGatePacket {
 
-    public Player player;
+    public String player;
     public String destination;
 
     public PlayerTransferPacket(){
-        super("PLAYER_TRANSFORM_PACKET", Packets.PLAYER_TRANSFORM_PACKET);
+        super("PLAYER_TRANSFER_PACKET", Packets.PLAYER_TRANSFER_PACKET);
     }
 
     @Override
@@ -20,7 +17,7 @@ public class PlayerTransferPacket extends StarGatePacket {
         isEncoded = false;
 
         String[] data = Convertor.getPacketStringData(encoded);
-        player = StarGateUniverse.getInstance().getServer().getPlayer(data[1]);
+        player = data[1];
         destination = data[2];
     }
 
@@ -28,7 +25,7 @@ public class PlayerTransferPacket extends StarGatePacket {
     public void encode() {
         Convertor convertor = new Convertor(getID());
 
-        convertor.putString(player.getName());
+        convertor.putString(player);
         convertor.putString(destination);
 
         this.encoded = convertor.getPacketString();
@@ -40,7 +37,7 @@ public class PlayerTransferPacket extends StarGatePacket {
         return null;
     }
 
-    public Player getPlayer() {
+    public String getPlayer() {
         return player;
     }
 

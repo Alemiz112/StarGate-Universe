@@ -77,7 +77,9 @@ public class StarGateUniverse extends PluginBase {
     public void restart(String name){
         this.getLogger().info("§eReloading StarGate Client "+name);
 
-        this.clients.remove(name);
+        Client client = this.clients.remove(name);
+        if (client != null) client.shutdown();
+
         this.start(name);
     }
 
@@ -168,10 +170,18 @@ public class StarGateUniverse extends PluginBase {
 
     /* Transfering player to other server*/
     public void transferPlayer(Player player, String server){
-        this.transferPlayer(player, server, "default");
+        this.transferPlayer(player.getName(), server, "default");
     }
 
     public void transferPlayer(Player player, String server, String client){
+        this.transferPlayer(player.getName(), server, client);
+    }
+
+    public void transferPlayer(String player, String server){
+        this.transferPlayer(player, server, "default");
+    }
+
+    public void transferPlayer(String player, String server, String client){
         if (player == null) return;
         PlayerTransferPacket packet = new PlayerTransferPacket();
         packet.player = player;
@@ -183,10 +193,18 @@ public class StarGateUniverse extends PluginBase {
 
     /* Kick player from any server connected to StarGate network*/
     public void kickPlayer(Player player, String reason){
-        this.kickPlayer(player, reason, "default");
+        this.kickPlayer(player.getName(), reason, "default");
     }
 
     public void kickPlayer(Player player, String reason, String client){
+        this.kickPlayer(player.getName(), reason, client);
+    }
+
+    public void kickPlayer(String player, String reason){
+        this.kickPlayer(player, reason, "default");
+    }
+
+    public void kickPlayer(String player, String reason, String client){
         if (player == null) return;
 
         KickPacket packet = new KickPacket();
@@ -223,7 +241,7 @@ public class StarGateUniverse extends PluginBase {
     }
 
     /* Using ForwardPacket you can forward packet to other client*/
-    public void forwardPacket(String destClient, String localClient, StarGatePacket packet){
+    public void forwardPacket(String destClient, String proxyServer, StarGatePacket packet){
         ForwardPacket forwardPacket = new ForwardPacket();
         forwardPacket.client = destClient;
 
@@ -232,7 +250,7 @@ public class StarGateUniverse extends PluginBase {
         }
 
         forwardPacket.encodedPacket = packet.encoded;
-        this.putPacket(forwardPacket, localClient);
+        this.putPacket(forwardPacket, proxyServer);
     }
 
     /** Proxy will send response with status: "STATUS_FAILED" or "STATUS_SUCCESS,server_name"
