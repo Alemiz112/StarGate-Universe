@@ -180,7 +180,7 @@ public class Client extends Thread {
 
             this.welcome();
 
-            Event event = new StarGateClientConnectEvent(this.name);
+            Event event = new StarGateClientConnectEvent(this.name, this.configName);
             StarGateUniverse.getInstance().getServer().getPluginManager().callEvent(event);
         }catch (Exception e){
             this.sgu.getLogger().info("§cWARNING: Error while opening iris!");

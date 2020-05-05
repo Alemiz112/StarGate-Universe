@@ -6,14 +6,20 @@ import cn.nukkit.event.HandlerList;
 public class StarGateClientConnectEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private String client;
+    private String clientName;
+    private String configName;
 
-    public StarGateClientConnectEvent(String client){
-        this.client = client;
+    public StarGateClientConnectEvent(String clientName, String configName){
+        this.clientName = clientName;
+        this.configName = configName;
     }
 
-    public String getClient() {
-        return this.client;
+    public String getClientName() {
+        return this.clientName;
+    }
+
+    public String getConfigName() {
+        return configName;
     }
 
     public static HandlerList getHandlers() {
