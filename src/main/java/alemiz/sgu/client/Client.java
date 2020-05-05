@@ -1,12 +1,14 @@
 package alemiz.sgu.client;
 
 import alemiz.sgu.StarGateUniverse;
+import alemiz.sgu.events.StarGateClientConnectEvent;
 import alemiz.sgu.packets.ConnectionInfoPacket;
 import alemiz.sgu.packets.PingPacket;
 import alemiz.sgu.packets.StarGatePacket;
 import alemiz.sgu.packets.WelcomePacket;
 import alemiz.sgu.tasks.ResponseRemoveTask;
 import alemiz.sgu.untils.ArrayUtils;
+import cn.nukkit.event.Event;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -177,6 +179,9 @@ public class Client extends Thread {
             }
 
             this.welcome();
+
+            Event event = new StarGateClientConnectEvent(this.name);
+            StarGateUniverse.getInstance().getServer().getPluginManager().callEvent(event);
         }catch (Exception e){
             this.sgu.getLogger().info("§cWARNING: Error while opening iris!");
             this.sgu.getLogger().info("§c"+e);
