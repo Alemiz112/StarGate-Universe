@@ -10,7 +10,9 @@ import alemiz.sgu.client.Client;
 import alemiz.sgu.events.CustomPacketEvent;
 import alemiz.sgu.untils.Convertor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StarGateUniverse extends PluginBase {
@@ -19,6 +21,7 @@ public class StarGateUniverse extends PluginBase {
     private static StarGateUniverse instance;
 
     protected Map<String, Client> clients = new HashMap<>();
+    private List<Runnable> shutdownHandlers = new ArrayList<>();
 
     protected static Map<Integer, StarGatePacket> packets = new HashMap<>();
     public Map<String, String> responses = new HashMap<>();
@@ -47,8 +50,11 @@ public class StarGateUniverse extends PluginBase {
 
     @Override
     public void onDisable() {
-        Map<String, Client> clients = new HashMap<>(this.clients);
+        for (Runnable handler : this.shutdownHandlers){
+            handler.run();
+        }
 
+        Map<String, Client> clients = new HashMap<>(this.clients);
         clients.forEach((String name, Client client)->{
             client.close(ConnectionInfoPacket.CLIENT_SHUTDOWN, true);
         });
@@ -85,6 +91,14 @@ public class StarGateUniverse extends PluginBase {
 
     public boolean removeClient(String clientName){
         return this.clients.remove(clientName) != null;
+    }
+
+    /**
+     * Register simple Runnable task which will be run before connection closes
+     */
+    public void registerShutdownHandler(Runnable task){
+        if (task == null) return;
+        this.shutdownHandlers.add(task);
     }
 
     /**
