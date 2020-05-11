@@ -111,11 +111,8 @@ public class Client extends Thread {
 
         /* This is just resending ping data. No handle needed*/
         if (message.startsWith("GATE_PING")){
-            String[] data = message.split(":");
-
             this.gatePacket(new PingPacket(){{
                 client = name;
-                pingData = data[1];
             }});
             return true;
         }
