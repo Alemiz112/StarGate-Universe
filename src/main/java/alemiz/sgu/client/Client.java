@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Client extends Thread {
@@ -38,7 +40,7 @@ public class Client extends Thread {
     protected boolean isConnected = true;
     protected boolean authenticated = false;
 
-
+    private List<String> outgoingPackets = new ArrayList<>();
 
     public Client(){
         this.sgu = StarGateUniverse.getInstance();
@@ -89,6 +91,8 @@ public class Client extends Thread {
             return true;
         }
 
+        if (!this.flushOutgoingPackets()) return false;
+
         String message;
         try {
             message = in.readLine();
@@ -138,6 +142,7 @@ public class Client extends Thread {
                         this.sgu.getLogger().info("§cWARNING: Reconnecting to StarGate server §6"+this.configName+"§c! Reason: "+((reason == null) ? "unknown" : reason));
 
                         this.force_close();
+                        this.authenticated = false;
                         return false; //tries to reconnect
                     case ConnectionInfoPacket.CONNECTION_CLOSED:
                         this.sgu.getLogger().info("§cWARNING: Connection to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
@@ -153,6 +158,24 @@ public class Client extends Thread {
             this.sgu.getLogger().info("§c" + e.getMessage());
         }
         return true;
+    }
+
+    private boolean flushOutgoingPackets(){
+        boolean success = true;
+
+        for (int i = 0; i < this.outgoingPackets.size(); i++){
+            String packet = this.outgoingPackets.remove(i);
+
+            try {
+                if (packet != null) this.out.println(packet);
+            }catch (Exception e){
+                this.sgu.getLogger().info("§cWARNING: Packet was not sent!");
+                this.sgu.getLogger().info("§c"+e.getMessage());
+                success = false;
+            }
+        }
+
+        return success;
     }
 
     private boolean authenticate(){
@@ -221,11 +244,25 @@ public class Client extends Thread {
         packetString = packet.encoded;
         String uuid = UUID.randomUUID().toString();
 
+        this.outgoingPackets.add(packetString +"!"+ uuid);
+        return uuid;
+    }
+
+    /* Send packet immediately*/
+    public String forceGatePacket(StarGatePacket packet){
+        String packetString;
+        if (!packet.isEncoded) {
+            packet.encode();
+        }
+        packetString = packet.encoded;
+        String uuid = UUID.randomUUID().toString();
+
         try {
             this.out.println(packetString +"!"+ uuid);
         }catch (Exception e){
             this.sgu.getLogger().info("§cWARNING: Packet was not sent!");
             this.sgu.getLogger().info("§c"+e.getMessage());
+            return null;
         }
         return uuid;
     }
@@ -277,6 +314,8 @@ public class Client extends Thread {
         packet.packetType = ConnectionInfoPacket.CONNECTION_CLOSED;
         packet.reason = reason;
         packet.putPacket(this.configName);
+
+        this.flushOutgoingPackets();
 
         if (shutdown){
             this.shutdown();
