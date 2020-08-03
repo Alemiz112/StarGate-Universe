@@ -140,7 +140,7 @@ public class Client extends Thread {
                         this.force_close();
                         return false; //tries to reconnect
                     case ConnectionInfoPacket.CONNECTION_CLOSED:
-                        this.sgu.getLogger().info("§cWARNING: Connection to StarGate server! Reason: §c"+((reason == null) ? "unknown" : reason));
+                        this.sgu.getLogger().info("§cWARNING: Connection to StarGate server was closed! Reason: §c"+((reason == null) ? "unknown" : reason));
 
                         this.force_close();
                         this.shutdown();
@@ -236,6 +236,7 @@ public class Client extends Thread {
 
         packet.server = this.name;
         packet.players = this.sgu.getServer().getOnlinePlayers().size();
+        packet.maxPlayers = this.sgu.getServer().getMaxPlayers();
         packet.tps = Math.round(sgu.getServer().getTicksPerSecond());
         packet.usage = Math.round(sgu.getServer().getTickUsage());
 
