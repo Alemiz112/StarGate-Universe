@@ -13,9 +13,9 @@
  *  limitations under the License.
  */
 
-package alemiz.sgu.utils;
+package alemiz.sgu.nukkit.utils;
 
-import alemiz.sgu.StarGateUniverse;
+import alemiz.sgu.nukkit.StarGateUniverse;
 import alemiz.stargate.utils.StarGateLogger;
 
 import java.io.PrintWriter;

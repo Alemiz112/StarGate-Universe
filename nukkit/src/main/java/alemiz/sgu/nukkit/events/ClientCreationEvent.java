@@ -13,9 +13,9 @@
  *  limitations under the License.
  */
 
-package alemiz.sgu.events;
+package alemiz.sgu.nukkit.events;
 
-import alemiz.sgu.StarGateUniverse;
+import alemiz.sgu.nukkit.StarGateUniverse;
 import alemiz.stargate.client.StarGateClient;
 import cn.nukkit.event.HandlerList;
 

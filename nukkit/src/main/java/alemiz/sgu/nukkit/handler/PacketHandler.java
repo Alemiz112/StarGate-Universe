@@ -13,21 +13,18 @@
  *  limitations under the License.
  */
 
-package alemiz.sgu.events;
+package alemiz.sgu.nukkit.handler;
 
-import alemiz.sgu.StarGateUniverse;
-import alemiz.stargate.client.StarGateClient;
-import cn.nukkit.event.HandlerList;
+import alemiz.sgu.nukkit.StarGateUniverse;
+import alemiz.stargate.client.ClientPacketHandler;
+import alemiz.stargate.client.ClientSession;
 
-public class ClientDisconnectedEvent extends ClientEvent {
+public class PacketHandler extends ClientPacketHandler {
 
-    private static final HandlerList handlers = new HandlerList();
+    private final StarGateUniverse loader;
 
-    public ClientDisconnectedEvent(StarGateClient client, StarGateUniverse plugin) {
-        super(client, plugin);
-    }
-
-    public static HandlerList getHandlers() {
-        return handlers;
+    public PacketHandler(ClientSession session, StarGateUniverse loader) {
+        super(session);
+        this.loader = loader;
     }
 }

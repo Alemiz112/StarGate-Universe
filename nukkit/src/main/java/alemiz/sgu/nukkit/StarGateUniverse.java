@@ -13,10 +13,10 @@
  *  limitations under the License.
  */
 
-package alemiz.sgu;
+package alemiz.sgu.nukkit;
 
-import alemiz.sgu.events.ClientCreationEvent;
-import alemiz.sgu.utils.NukkitLogger;
+import alemiz.sgu.nukkit.events.ClientCreationEvent;
+import alemiz.sgu.nukkit.utils.NukkitLogger;
 import alemiz.stargate.client.StarGateClient;
 import alemiz.stargate.codec.StarGatePackets;
 import alemiz.stargate.protocol.ServerInfoRequestPacket;
