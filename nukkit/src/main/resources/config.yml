@@ -11,5 +11,10 @@ connections:
 
 # Enable debug logger
 debug: true
+# Change log level to log packets in debug mode.
+# Set to 0 for no packet logs.
+# Set to 1 to log packets except Ping, Pong and connection packets.
+# Set to 2 to log all packets.
+logLevel: 0
 # Default client will be used if no clientName specified in api functions
 defaultClient: "lobby1"

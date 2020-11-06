@@ -35,6 +35,8 @@ public class StarGateClientListener extends alemiz.stargate.client.StarGateClien
     public void onSessionCreated(InetSocketAddress address, ClientSession session) {
         ClientConnectedEvent event = new ClientConnectedEvent(session.getClient(), this.loader);
         this.loader.getServer().getPluginManager().callEvent(event);
+        session.setLogInputLevel(this.loader.getLogLevel());
+        session.setLogOutputLevel(this.loader.getLogLevel());
     }
 
     /**

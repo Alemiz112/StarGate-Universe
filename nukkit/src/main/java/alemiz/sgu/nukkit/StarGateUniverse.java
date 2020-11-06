@@ -44,6 +44,8 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
     private final Map<String, StarGateClient> clients = new ConcurrentHashMap<>();
     private String defaultClient;
 
+    private int logLevel;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -51,6 +53,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         this.logger = new NukkitLogger(this);
         this.logger.setDebug(this.getConfig().getBoolean("debug"));
         this.defaultClient = this.getConfig().getString("defaultClient");
+        this.logLevel = this.getConfig().getInt("logLevel");
 
         for (String clientName : this.getConfig().getSection("connections").getKeys(false)){
             this.createClient(clientName);
@@ -118,6 +121,14 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
 
     public List<StarGateClient> getClientsCopy(){
         return new ArrayList<>(this.clients.values());
+    }
+
+    public void setLogLevel(int logLevel) {
+        this.logLevel = logLevel;
+    }
+
+    public int getLogLevel() {
+        return this.logLevel;
     }
 
     public void transferPlayer(Player player, String targetServer) {
