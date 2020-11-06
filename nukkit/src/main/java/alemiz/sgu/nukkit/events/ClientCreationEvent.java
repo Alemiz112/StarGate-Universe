@@ -17,9 +17,10 @@ package alemiz.sgu.nukkit.events;
 
 import alemiz.sgu.nukkit.StarGateUniverse;
 import alemiz.stargate.client.StarGateClient;
+import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
 
-public class ClientCreationEvent extends ClientEvent {
+public class ClientCreationEvent extends ClientEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 

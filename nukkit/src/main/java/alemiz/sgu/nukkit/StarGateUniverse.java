@@ -30,6 +30,8 @@ import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -112,6 +114,10 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
 
     public StarGateClient getDefaultClient() {
         return this.getClient(this.defaultClient);
+    }
+
+    public List<StarGateClient> getClientsCopy(){
+        return new ArrayList<>(this.clients.values());
     }
 
     public void transferPlayer(Player player, String targetServer) {
