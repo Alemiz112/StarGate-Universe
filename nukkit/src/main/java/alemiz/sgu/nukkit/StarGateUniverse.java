@@ -45,6 +45,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
     private String defaultClient;
 
     private int logLevel;
+    private boolean autoStart;
 
     @Override
     public void onEnable() {
@@ -54,6 +55,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         this.logger.setDebug(this.getConfig().getBoolean("debug"));
         this.defaultClient = this.getConfig().getString("defaultClient");
         this.logLevel = this.getConfig().getInt("logLevel");
+        this.autoStart = this.getConfig().getBoolean("autoStart");
 
         for (String clientName : this.getConfig().getSection("connections").getKeys(false)){
             this.createClient(clientName);
@@ -96,10 +98,14 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         ClientCreationEvent event = new ClientCreationEvent(client, this);
         this.getServer().getPluginManager().callEvent(event);
 
-        if (!event.isCancelled()){
-            client.start();
-            this.clients.put(clientName, client);
+        if (event.isCancelled()){
+            return;
         }
+
+        if (this.autoStart){
+            client.start();
+        }
+        this.clients.put(clientName, client);
     }
 
     public static StarGateUniverse getInstance() {

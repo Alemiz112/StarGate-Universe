@@ -18,3 +18,6 @@ debug: true
 logLevel: 0
 # Default client will be used if no clientName specified in api functions
 defaultClient: "lobby1"
+# Start clients after plugin is enabled.
+# Disabling auto start will allow plugins to trigger connection manually.
+autoStart: true
