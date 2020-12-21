@@ -110,10 +110,10 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         this.clients.put(clientName, client);
     }
 
-	public boolean isAutoStart() {
-		return autoStart;
-	}
-	
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
     public static StarGateUniverse getInstance() {
         return instance;
     }
