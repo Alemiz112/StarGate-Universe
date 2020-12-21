@@ -17,6 +17,7 @@ package alemiz.sgu.nukkit;
 
 import alemiz.sgu.nukkit.events.ClientCreationEvent;
 import alemiz.sgu.nukkit.utils.NukkitLogger;
+import alemiz.sgu.nukkit.utils.ReconnectTask;
 import alemiz.stargate.client.StarGateClient;
 import alemiz.stargate.codec.StarGatePackets;
 import alemiz.stargate.protocol.ServerInfoRequestPacket;
@@ -60,6 +61,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         for (String clientName : this.getConfig().getSection("connections").getKeys(false)){
             this.createClient(clientName);
         }
+        this.getServer().getScheduler().scheduleDelayedRepeatingTask(new ReconnectTask(), 20*60, 20*60, false);
     }
 
     @Override
@@ -108,6 +110,10 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         this.clients.put(clientName, client);
     }
 
+	public boolean isAutoStart() {
+		return autoStart;
+	}
+	
     public static StarGateUniverse getInstance() {
         return instance;
     }
