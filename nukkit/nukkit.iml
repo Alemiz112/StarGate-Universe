@@ -12,7 +12,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: cn.nukkit:nukkit:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: alemiz.stargate:common:2.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: alemiz.stargate:common:2.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.43.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.43.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.43.Final" level="project" />
@@ -25,5 +25,6 @@
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
+    <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
   </component>
 </module>

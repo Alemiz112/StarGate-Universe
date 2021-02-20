@@ -38,6 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StarGateUniverse extends PluginBase implements ServerLoader {
 
+    public static final int STARGATE_VERSION = 1;
+
     private static StarGateUniverse instance;
     private NukkitLogger logger;
 
@@ -76,7 +78,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         }
 
         String password = this.getConfig().getString("connections."+clientName+".password");
-        HandshakeData handshakeData = new HandshakeData(clientName, password, HandshakeData.SOFTWARE.NUKKIT);
+        HandshakeData handshakeData = new HandshakeData(clientName, password, HandshakeData.SOFTWARE.NUKKIT, STARGATE_VERSION);
 
         String addressString = this.getConfig().getString("connections."+clientName+".address");
         int port = this.getConfig().getInt("connections."+clientName+".port");
