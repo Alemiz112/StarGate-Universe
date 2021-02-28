@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StarGateUniverse extends PluginBase implements ServerLoader {
 
-    public static final int STARGATE_VERSION = 1;
+    public static final int STARGATE_VERSION = 2;
 
     private static StarGateUniverse instance;
     private NukkitLogger logger;
