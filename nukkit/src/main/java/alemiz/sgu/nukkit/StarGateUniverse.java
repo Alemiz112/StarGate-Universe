@@ -96,6 +96,7 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         client.setClientListener(new StarGateClientListener(this));
         client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_INFO_REQUEST_PACKET, ServerInfoRequestPacket.class);
         client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_INFO_RESPONSE_PACKET, ServerInfoResponsePacket.class);
+        client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_TRANSFER_PACKET, ServerTransferPacket.class);
 
         ClientCreationEvent event = new ClientCreationEvent(client, this);
         this.getServer().getPluginManager().callEvent(event);
