@@ -19,10 +19,7 @@ import alemiz.sgu.nukkit.events.ClientCreationEvent;
 import alemiz.sgu.nukkit.utils.NukkitLogger;
 import alemiz.stargate.client.StarGateClient;
 import alemiz.stargate.codec.StarGatePackets;
-import alemiz.stargate.protocol.ServerInfoRequestPacket;
-import alemiz.stargate.protocol.ServerInfoResponsePacket;
-import alemiz.stargate.protocol.ServerTransferPacket;
-import alemiz.stargate.protocol.StarGatePacket;
+import alemiz.stargate.protocol.*;
 import alemiz.stargate.protocol.types.HandshakeData;
 import alemiz.stargate.utils.ServerLoader;
 import alemiz.stargate.utils.StarGateLogger;
@@ -97,6 +94,8 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
         client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_INFO_REQUEST_PACKET, ServerInfoRequestPacket.class);
         client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_INFO_RESPONSE_PACKET, ServerInfoResponsePacket.class);
         client.getProtocolCodec().registerPacket(StarGatePackets.SERVER_TRANSFER_PACKET, ServerTransferPacket.class);
+        client.getProtocolCodec().registerPacket(StarGatePackets.PLAYER_PING_REQUEST_PACKET, PlayerPingRequestPacket.class);
+        client.getProtocolCodec().registerPacket(StarGatePackets.PLAYER_PING_RESPONSE_PACKET, PlayerPingResponsePacket.class);
 
         ClientCreationEvent event = new ClientCreationEvent(client, this);
         this.getServer().getPluginManager().callEvent(event);
@@ -162,6 +161,22 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
     }
 
     /**
+     * Transfer to get player ping details.
+     * @param player instance used to get ping.
+     * @param clientName client name that will be used.
+     * @return future that can be used to get player ping.
+     */
+    public CompletableFuture<StarGatePacket> pingPlayer(Player player, String clientName) {
+        StarGateClient client = this.getClient(clientName == null ? this.defaultClient : clientName);
+        if (client == null) {
+            return null;
+        }
+        PlayerPingRequestPacket packet = new PlayerPingRequestPacket();
+        packet.setPlayerName(player.getName());
+        return client.responsePacket(packet);
+    }
+
+    /**
      * Get info about another server or master server.
      * @param serverName name of server that info will be send. In selfMode it can be custom.
      * @param selfMode if send info of master server, StarGate server.
@@ -169,8 +184,8 @@ public class StarGateUniverse extends PluginBase implements ServerLoader {
      * @return future that can be used to get response data.
      */
     public CompletableFuture<StarGatePacket> serverInfo(String serverName, boolean selfMode, String clientName) {
-        StarGateClient client = this.getClient(clientName == null? this.defaultClient : clientName);
-        if (client == null){
+        StarGateClient client = this.getClient(clientName == null ? this.defaultClient : clientName);
+        if (client == null) {
             return null;
         }
         ServerInfoRequestPacket packet = new ServerInfoRequestPacket();
