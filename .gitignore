@@ -1,4 +1,44 @@
+# Compiled class file
+*.class
+
+# Log files
+*.log
+*.log.gz
+
+# BlueJ files
+*.ctxt
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# JentBrains
+.idea/*
+
+# Allow copyright files
+!.idea/copyright
+
 out/
-.idea/
-StarGate-Universe.iml
+
+*.iml
+*.iws
+*.ipr
+
+modules.xml
+
+# Maven files
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
